@@ -1,41 +1,37 @@
-Write-Host "=== HyperMart Local Setup ===" -ForegroundColor Cyan
+$ErrorActionPreference = "Stop"
+$ROOT = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
-    Write-Host "ERROR: Node.js not installed. Get it from https://nodejs.org" -ForegroundColor Red
-    pause; exit 1
-}
-Write-Host "Node $(node --version) found." -ForegroundColor Green
+Write-Host "=== HyperMart ===" -ForegroundColor Cyan
+Write-Host "Root: $ROOT"
 
-$ROOT = $PSScriptRoot
+# Check Node
+try { $v = node --version; Write-Host "Node $v" -ForegroundColor Green }
+catch { Write-Host "ERROR: Node.js not installed. Get it: https://nodejs.org" -ForegroundColor Red; Read-Host; exit }
+
+# Write backend .env
+Set-Content "$ROOT\backend-node\.env" "JWT_SECRET=hypermart-secret`nJWT_EXPIRY_DAYS=30`nPORT=5000`nNODE_ENV=development`nMAX_UPLOAD_MB=10"
+Write-Host ".env written"
 
 # Install backend deps
-if (-not (Test-Path "$ROOT\backend-node\node_modules")) {
-    Write-Host "Installing dependencies..." -ForegroundColor Yellow
-    Push-Location "$ROOT\backend-node"; npm install; Pop-Location
-}
+Write-Host "Installing backend deps..." -ForegroundColor Yellow
+Set-Location "$ROOT\backend-node"
+npm install
+if ($LASTEXITCODE -ne 0) { Write-Host "npm install FAILED" -ForegroundColor Red; Read-Host; exit }
+Write-Host "Deps installed" -ForegroundColor Green
 
-# Create backend .env
-@"
-JWT_SECRET=hypermart-local-dev-secret-key
-JWT_EXPIRY_DAYS=30
-PORT=5000
-NODE_ENV=development
-MAX_UPLOAD_MB=10
-"@ | Out-File -FilePath "$ROOT\backend-node\.env" -Encoding utf8
-
-# Seed database
+# Seed
 if (-not (Test-Path "$ROOT\backend-node\hypermart.db")) {
-    Write-Host "Seeding database..." -ForegroundColor Yellow
-    Push-Location "$ROOT\backend-node"; node seed.js --reset; Pop-Location
+    Write-Host "Seeding..." -ForegroundColor Yellow
+    node seed.js --reset
+    if ($LASTEXITCODE -ne 0) { Write-Host "Seed FAILED" -ForegroundColor Red; Read-Host; exit }
+    Write-Host "Seeded" -ForegroundColor Green
 }
 
 Write-Host ""
-Write-Host "================================" -ForegroundColor Cyan
-Write-Host " Open: http://localhost:5000" -ForegroundColor White
-Write-Host "================================" -ForegroundColor Cyan
-Write-Host " Customer : ravi@example.com / Customer@123"
-Write-Host " Owner    : anand@example.com / Owner@123"
-Write-Host " Admin    : senamallas@gmail.com / Admin@123"
+Write-Host "Open http://localhost:5000 in your browser" -ForegroundColor Cyan
+Write-Host "Customer: ravi@example.com / Customer@123"
 Write-Host ""
+Write-Host "Starting server..." -ForegroundColor Green
 
-Push-Location "$ROOT\backend-node"; node index.js
+Set-Location "$ROOT\backend-node"
+node index.js
