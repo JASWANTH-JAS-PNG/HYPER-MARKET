@@ -62,6 +62,6 @@ Write-Host "  Customer : ravi@example.com     / Customer@123"
 Write-Host "  Owner    : anand@example.com    / Owner@123"
 Write-Host "  Admin    : senamallas@gmail.com / Admin@123"
 Write-Host ""
-Write-Host "Opening browser in 5 seconds..." -ForegroundColor Green
-Start-Sleep -Seconds 5
-Start-Process "http://localhost:5173"
+Write-Host ">> Wait for BOTH terminal windows to show 'ready'" -ForegroundColor Yellow
+Write-Host ">> Then open this in your browser:" -ForegroundColor Yellow
+Write-Host "   http://localhost:5173" -ForegroundColor Cyan
