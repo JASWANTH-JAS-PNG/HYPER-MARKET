@@ -80,6 +80,16 @@ elif CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
 @app.on_event("startup")
 def startup():
     create_tables()
+    # Auto-seed demo data if the database is empty (e.g. fresh Render deploy)
+    try:
+        from database import get_db_ctx
+        from models import User
+        with get_db_ctx() as db:
+            if db.query(User).count() == 0:
+                import seed as seed_module
+                seed_module.run(reset=False)
+    except Exception:
+        pass
     # Runtime migration — safe to run against existing DBs
     from database import engine
     with engine.connect() as conn:
