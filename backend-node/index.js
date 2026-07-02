@@ -66,6 +66,12 @@ app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
 app.use("/uploads", express.static(UPLOADS_DIR));
 
+// Serve built frontend
+const FRONTEND_DIST = path.join(__dirname, "../frontend/dist");
+if (fs.existsSync(FRONTEND_DIST)) {
+  app.use(express.static(FRONTEND_DIST));
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Enums (for validation)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1808,6 +1814,11 @@ app.delete("/users/me", requireAuth, (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // Start
 // ─────────────────────────────────────────────────────────────────────────────
+
+// SPA fallback — must be after all API routes
+if (fs.existsSync(FRONTEND_DIST)) {
+  app.get("*", (_req, res) => res.sendFile(path.join(FRONTEND_DIST, "index.html")));
+}
 
 async function startServer() {
   await db.init();

@@ -2,11 +2,10 @@ Write-Host "=== HyperMart Local Setup ===" -ForegroundColor Cyan
 
 # Check Node.js
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
-    Write-Host "ERROR: Node.js is not installed. Download from https://nodejs.org" -ForegroundColor Red
-    Read-Host "Press Enter to exit"
-    exit 1
+    Write-Host "ERROR: Node.js not installed. Get it from https://nodejs.org" -ForegroundColor Red
+    pause; exit 1
 }
-Write-Host "Node.js $(node --version) found." -ForegroundColor Green
+Write-Host "Node $(node --version) found." -ForegroundColor Green
 
 $ROOT = $PSScriptRoot
 
@@ -31,8 +30,10 @@ NODE_ENV=development
 MAX_UPLOAD_MB=10
 "@ | Out-File -FilePath "$ROOT\backend-node\.env" -Encoding utf8
 
-# Point frontend to local backend
+# Build frontend pointing to backend port 3001
+Write-Host "Building frontend..." -ForegroundColor Yellow
 "VITE_API_URL=http://localhost:3001" | Out-File -FilePath "$ROOT\frontend\.env" -Encoding utf8
+Push-Location "$ROOT\frontend"; npm run build; Pop-Location
 
 # Seed database
 if (-not (Test-Path "$ROOT\backend-node\hypermart.db")) {
@@ -40,21 +41,11 @@ if (-not (Test-Path "$ROOT\backend-node\hypermart.db")) {
     Push-Location "$ROOT\backend-node"; node seed.js --reset; Pop-Location
 }
 
-# Start backend
-Write-Host "Starting backend..." -ForegroundColor Green
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "Write-Host 'BACKEND' -ForegroundColor Cyan; cd '$ROOT\backend-node'; node index.js"
-
-Start-Sleep -Seconds 3
-
-# Start frontend
-Write-Host "Starting frontend..." -ForegroundColor Green
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "Write-Host 'FRONTEND' -ForegroundColor Cyan; cd '$ROOT\frontend'; npm run dev"
-
+# Start single server (serves API + built frontend)
 Write-Host ""
 Write-Host "================================" -ForegroundColor Cyan
-Write-Host " Frontend : http://localhost:5173" -ForegroundColor White
-Write-Host " Backend  : http://localhost:3001" -ForegroundColor White
-Write-Host " API Docs : http://localhost:3001/docs" -ForegroundColor White
+Write-Host " Starting HyperMart..." -ForegroundColor Green
+Write-Host " Open: http://localhost:3001" -ForegroundColor White
 Write-Host "================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Demo Login:" -ForegroundColor Yellow
@@ -62,6 +53,5 @@ Write-Host "  Customer : ravi@example.com     / Customer@123"
 Write-Host "  Owner    : anand@example.com    / Owner@123"
 Write-Host "  Admin    : senamallas@gmail.com / Admin@123"
 Write-Host ""
-Write-Host ">> Wait for BOTH terminal windows to show 'ready'" -ForegroundColor Yellow
-Write-Host ">> Then open this in your browser:" -ForegroundColor Yellow
-Write-Host "   http://localhost:5173" -ForegroundColor Cyan
+
+Push-Location "$ROOT\backend-node"; node index.js
