@@ -18,7 +18,7 @@ if (-not (Test-Path "$ROOT\backend-node\node_modules")) {
 @"
 JWT_SECRET=hypermart-local-dev-secret-key
 JWT_EXPIRY_DAYS=30
-PORT=3001
+PORT=5000
 NODE_ENV=development
 MAX_UPLOAD_MB=10
 "@ | Out-File -FilePath "$ROOT\backend-node\.env" -Encoding utf8
@@ -31,7 +31,7 @@ if (-not (Test-Path "$ROOT\backend-node\hypermart.db")) {
 
 Write-Host ""
 Write-Host "================================" -ForegroundColor Cyan
-Write-Host " Open: http://localhost:3001    " -ForegroundColor White
+Write-Host " Open: http://localhost:5000" -ForegroundColor White
 Write-Host "================================" -ForegroundColor Cyan
 Write-Host " Customer : ravi@example.com / Customer@123"
 Write-Host " Owner    : anand@example.com / Owner@123"
