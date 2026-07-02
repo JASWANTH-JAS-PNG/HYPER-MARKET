@@ -36,6 +36,10 @@ if (-not (Test-Path "backend-node\hypermart.db")) {
     Set-Location ..
 }
 
+# Point frontend to local backend
+"VITE_API_URL=http://localhost:8000" | Out-File -FilePath "frontend\.env" -Encoding utf8
+Write-Host "Set frontend to use local backend (localhost:8000)" -ForegroundColor Yellow
+
 # Start backend in new terminal
 Write-Host "Starting backend on http://localhost:8000 ..." -ForegroundColor Green
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD\backend-node'; node --watch index.js"
