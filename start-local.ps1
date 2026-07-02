@@ -26,13 +26,13 @@ if (-not (Test-Path "$ROOT\frontend\node_modules")) {
 @"
 JWT_SECRET=hypermart-local-dev-secret-key
 JWT_EXPIRY_DAYS=30
-PORT=8000
+PORT=3001
 NODE_ENV=development
 MAX_UPLOAD_MB=10
 "@ | Out-File -FilePath "$ROOT\backend-node\.env" -Encoding utf8
 
 # Point frontend to local backend
-"VITE_API_URL=http://localhost:8000" | Out-File -FilePath "$ROOT\frontend\.env" -Encoding utf8
+"VITE_API_URL=http://localhost:3001" | Out-File -FilePath "$ROOT\frontend\.env" -Encoding utf8
 
 # Seed database
 if (-not (Test-Path "$ROOT\backend-node\hypermart.db")) {
@@ -53,8 +53,8 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", "Write-Host 'FRONT
 Write-Host ""
 Write-Host "================================" -ForegroundColor Cyan
 Write-Host " Frontend : http://localhost:5173" -ForegroundColor White
-Write-Host " Backend  : http://localhost:8000" -ForegroundColor White
-Write-Host " API Docs : http://localhost:8000/docs" -ForegroundColor White
+Write-Host " Backend  : http://localhost:3001" -ForegroundColor White
+Write-Host " API Docs : http://localhost:3001/docs" -ForegroundColor White
 Write-Host "================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Demo Login:" -ForegroundColor Yellow
