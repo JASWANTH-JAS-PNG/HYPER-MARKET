@@ -46,7 +46,6 @@ uploads/*
 !uploads/.gitkeep
 
 # Build outputs
-dist/
 build/
 *.egg-info/
 
