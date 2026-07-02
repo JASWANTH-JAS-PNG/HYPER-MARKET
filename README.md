@@ -9,6 +9,30 @@ A multi-vendor hyperlocal grocery marketplace connecting neighbourhood shops wit
 
 ---
 
+## Quick Start (Local)
+
+```powershell
+git clone https://github.com/JASWANTH-JAS-PNG/HYPER-MARKET.git
+cd HYPER-MARKET
+.\start-local.ps1
+```
+
+| Service | Local URL |
+|---------|-----------|
+| **Frontend** | http://localhost:5173 |
+| **Backend API** | http://localhost:8000 |
+| **API Docs** | http://localhost:8000/docs |
+
+**Demo credentials after seeding:**
+
+| Role | Email | Password |
+|------|-------|----------|
+| Customer | ravi@example.com | Customer@123 |
+| Shop Owner | anand@example.com | Owner@123 |
+| Admin | senamallas@gmail.com | Admin@123 |
+
+---
+
 ## Deployed Applications
 
 | Service | URL | Status |
